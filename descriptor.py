@@ -8,8 +8,8 @@ import scipy.stats as stats
 images_path = './images/'
 fruits = ["apples", "bananas"]
 
-descriptor_bananas = np.zeros((14, 7))
-descriptor_apples = np.zeros((14, 7))
+descriptor_bananas = np.zeros((14, 4))
+descriptor_apples = np.zeros((14, 4))
 descriptors = np.array([descriptor_apples, descriptor_bananas])
 
 
@@ -24,7 +24,7 @@ def genDescriptor(image, imageBbRgb):
         if abs(h) * abs(w) > abs(hMax) * abs(wMax):
             xMax, yMax, wMax, hMax = x, y, w, h
             maxCnt = cnt
-    descriptor = np.array([0., 0., 0., 0., 0., 0., 0.])
+    descriptor = np.array([0., 0., 0., 0.])
     area = float(cv2.contourArea(maxCnt))
     perimetro = float(cv2.arcLength(maxCnt, True))
     descriptor[0] = area
@@ -32,9 +32,9 @@ def genDescriptor(image, imageBbRgb):
     descriptor[2] = 4 * np.pi * (area / perimetro ** 2)
     (x, y), (minorAxisLength, majorAxisLength), angle = cv2.fitEllipse(maxCnt)
     descriptor[3] = np.sqrt(majorAxisLength ** 2 - minorAxisLength ** 2) / majorAxisLength
-    descriptor[4] = np.mean(imageBbRgb[:, :, 0])
-    descriptor[5] = np.mean(imageBbRgb[:, :, 1])
-    descriptor[6] = np.mean(imageBbRgb[:, :, 2])
+    #descriptor[4] = np.mean(imageBbRgb[:, :, 0])
+    #descriptor[5] = np.mean(imageBbRgb[:, :, 1])
+    #descriptor[6] = np.mean(imageBbRgb[:, :, 2])
 
     return descriptor
 

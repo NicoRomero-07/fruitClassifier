@@ -4,6 +4,7 @@ import math
 import matplotlib.pyplot as plt
 import matplotlib
 import scipy.stats as stats
+import functions
 
 images_path = './images/test/'
 fruits = ["apples", "bananas"]
@@ -51,67 +52,6 @@ def discriminant_function(features, mu, cov, prior):
     return dx
 
 
-def computeImage(imageRGB):
-    image = cv2.cvtColor(imageRGB, cv2.COLOR_BGR2GRAY)
-    image = cv2.GaussianBlur(image, (5, 5), 5)
-
-    kernel = np.ones((5, 5), np.uint8)
-
-    ret, binarizedOtsu = cv2.threshold(image, 240, 255, cv2.THRESH_BINARY_INV)
-    closing = cv2.morphologyEx(binarizedOtsu, cv2.MORPH_CLOSE, kernel)
-    dilating = cv2.dilate(closing, kernel)
-    erosing = cv2.erode(dilating, kernel)
-
-    contours, hierarchy = cv2.findContours(erosing, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    idx = 0
-    xMax, yMax, wMax, hMax = 0, 0, 0, 0
-    maxCnt = 0
-    for cnt in contours:
-        print(idx)
-        idx += 1
-        x, y, w, h = cv2.boundingRect(cnt)
-        if abs(h) * abs(w) > abs(hMax) * abs(wMax):
-            xMax, yMax, wMax, hMax = x, y, w, h
-            maxCnt = cnt
-
-    if idx > 0:
-        final = erosing[yMax:yMax + hMax, xMax:xMax + wMax]
-    else:
-        final = erosing
-
-    final = cv2.resize(final, (400, 500))
-    imageRGBbb = imageRGB[yMax:yMax + hMax, xMax:xMax + wMax]
-
-    return final, imageRGBbb
-
-
-def genDescriptor(image, imageBbRgb):
-    contours, hierarchy = cv2.findContours(image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    idx = 0
-    xMax, yMax, wMax, hMax = 0, 0, 0, 0
-    maxCnt = 0
-    for cnt in  contours:
-        idx += 1
-        x, y, w, h = cv2.boundingRect(cnt)
-        if abs(h) * abs(w) > abs(hMax) * abs(wMax):
-            xMax, yMax, wMax, hMax = x, y, w, h
-            maxCnt = cnt
-
-    descriptor = np.array([0., 0., 0., 0., 0., 0., 0.])
-    area = float(cv2.contourArea(maxCnt))
-    perimetro = float(cv2.arcLength(maxCnt, True))
-    descriptor[0] = area
-    descriptor[1] = perimetro
-    descriptor[2] = 4 * np.pi * (area / perimetro ** 2)
-    (x, y), (minorAxisLength, majorAxisLength), angle = cv2.fitEllipse(maxCnt)
-    descriptor[3] = np.sqrt(majorAxisLength ** 2 - minorAxisLength ** 2) / majorAxisLength
-    descriptor[4] = np.mean(imageBbRgb[:, :, 0])
-    descriptor[5] = np.mean(imageBbRgb[:, :, 1])
-    descriptor[6] = np.mean(imageBbRgb[:, :, 2])
-
-    return descriptor
-
-
 def classify_image(sign_image):
     """ Classify a traffic sign image by its shape using a bayesian classifier
 
@@ -120,8 +60,8 @@ def classify_image(sign_image):
     """
 
     # Compute descriptor
-    image, imageRGBbb = computeImage(sign_image)
-    descriptor = genDescriptor(image, imageRGBbb)
+    image, imageRGBbb = functions.computeImage(sign_image)
+    descriptor = functions.genDescriptor(image, imageRGBbb)
     # Classify circle test image
     prior = 1 / 2
     apple = discriminant_function(descriptor, mean_apples, cov_apples, prior)
