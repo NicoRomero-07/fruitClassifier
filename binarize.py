@@ -43,12 +43,12 @@ def computeImage(imageRGB):
 
     final = cv2.resize(final, (400, 500))
     imageRGBbb = imageRGB[yMax:yMax + hMax, xMax:xMax + wMax]
-    cv2.imwrite("./images/rgbBoundingBox/" + fruits[f] + "/" + str(i) + ".jpg", imageRGB)
+    cv2.imwrite("./images/rgbBoundingBox/" + fruits[f] + "/" + str(i) + ".jpg", imageRGB[yMax:yMax + hMax, xMax:xMax + wMax])
     return final, imageRGBbb
 
 
 for f in range(0, 2):
-    for i in range(1, 15):
+    for i in range(1, 11):
         imageRGB = cv2.imread(images_path + "/rgb/" + str(fruits[f]) + "/" + str(i) + ".jpg", cv2.IMREAD_COLOR)
 
         finalImage, x = computeImage(imageRGB)

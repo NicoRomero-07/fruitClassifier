@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import scipy.stats as stats
 
-images_path = './images/binarized/'
+images_path = './images/rgb/'
 
 
 def image_moments(region):
@@ -23,9 +23,9 @@ def image_moments(region):
     cnt = contours[0]
 
     # Compute moments
-    moments = cv2.moments(cnt)
+    moment = cv2.moments(cnt)
 
-    return moments
+    return moment
 
 
 hu_apples = np.zeros((14, 7))

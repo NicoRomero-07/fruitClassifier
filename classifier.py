@@ -50,13 +50,10 @@ def discriminant_function(features, mu, cov, prior):
 
     return dx
 
-
 def computeImage(imageRGB):
     image = cv2.cvtColor(imageRGB, cv2.COLOR_BGR2GRAY)
     image = cv2.GaussianBlur(image, (5, 5), 5)
-
     kernel = np.ones((5, 5), np.uint8)
-
     ret, binarizedOtsu = cv2.threshold(image, 240, 255, cv2.THRESH_BINARY_INV)
     closing = cv2.morphologyEx(binarizedOtsu, cv2.MORPH_CLOSE, kernel)
     dilating = cv2.dilate(closing, kernel)
@@ -84,32 +81,28 @@ def computeImage(imageRGB):
 
     return final, imageRGBbb
 
-
 def genDescriptor(image, imageBbRgb):
     contours, hierarchy = cv2.findContours(image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     idx = 0
     xMax, yMax, wMax, hMax = 0, 0, 0, 0
     maxCnt = 0
-    for cnt in  contours:
+    for cnt in contours:
         idx += 1
         x, y, w, h = cv2.boundingRect(cnt)
         if abs(h) * abs(w) > abs(hMax) * abs(wMax):
             xMax, yMax, wMax, hMax = x, y, w, h
             maxCnt = cnt
-
-    descriptor = np.array([0., 0., 0., 0., 0., 0., 0.])
+    descriptor = np.array([0., 0.])
     area = float(cv2.contourArea(maxCnt))
     perimetro = float(cv2.arcLength(maxCnt, True))
-    descriptor[0] = area
-    descriptor[1] = perimetro
-    descriptor[2] = 4 * np.pi * (area / perimetro ** 2)
-    (x, y), (minorAxisLength, majorAxisLength), angle = cv2.fitEllipse(maxCnt)
-    descriptor[3] = np.sqrt(majorAxisLength ** 2 - minorAxisLength ** 2) / majorAxisLength
-    descriptor[4] = np.mean(imageBbRgb[:, :, 0])
-    descriptor[5] = np.mean(imageBbRgb[:, :, 1])
-    descriptor[6] = np.mean(imageBbRgb[:, :, 2])
+    descriptor[0] = perimetro**2 / area
+    descriptor[1] = 4 * np.pi * (area / perimetro ** 2)
+    #descriptor[2] = np.mean(imageBbRgb[:, :, 0])
+    #descriptor[3] = np.mean(imageBbRgb[:, :, 1])
+    #descriptor[4] = np.mean(imageBbRgb[:, :, 2])
 
     return descriptor
+
 
 
 def classify_image(sign_image):
@@ -121,7 +114,10 @@ def classify_image(sign_image):
 
     # Compute descriptor
     image, imageRGBbb = computeImage(sign_image)
+    cv2.imwrite("./images/test/computedtestbanana.jpg",image)
+
     descriptor = genDescriptor(image, imageRGBbb)
+    print(descriptor)
     # Classify circle test image
     prior = 1 / 2
     apple = discriminant_function(descriptor, mean_apples, cov_apples, prior)
@@ -147,7 +143,9 @@ test_apple = cv2.imread(images_path + "test_apple.jpg", cv2.IMREAD_COLOR)
 test_banana = cv2.imread(images_path + "test_banana.jpg", cv2.IMREAD_COLOR)
 
 # Classify them
+
 print("Apple: ")
 descriptor_apple = classify_image(test_apple)
+
 print("Banana: ")
 descriptor_banana = classify_image(test_banana)
