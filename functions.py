@@ -26,6 +26,7 @@ def image_moments(region):
 
 
 def genDescriptor(image, imageBbRgb):
+
     contours, hierarchy = cv2.findContours(image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     idx = 0
     xMax, yMax, wMax, hMax = 0, 0, 0, 0
@@ -33,7 +34,7 @@ def genDescriptor(image, imageBbRgb):
     for cnt in contours:
         idx += 1
         x, y, w, h = cv2.boundingRect(cnt)
-        if abs(h) * abs(w) > abs(hMax) * abs(wMax):
+        if abs(hMax) * abs(wMax) < abs(h) * abs(w) :
             xMax, yMax, wMax, hMax = x, y, w, h
             maxCnt = cnt
 
@@ -42,9 +43,13 @@ def genDescriptor(image, imageBbRgb):
     perimetro = float(cv2.arcLength(maxCnt, True))
     descriptor[0] = perimetro**2 / area
     descriptor[1] = 4 * np.pi * (area / perimetro ** 2)
-    descriptor[2] = np.mean(imageBbRgb[:, :, 0])
-    descriptor[3] = np.mean(imageBbRgb[:, :, 1])
-    descriptor[4] = np.mean(imageBbRgb[:, :, 2])
+
+    imageHSV = cv2.cvtColor(imageBbRgb, cv2.COLOR_BGR2HSV)
+
+    descriptor[2] = np.mean(imageHSV[:, :, 0])
+    descriptor[3] = np.mean(imageHSV[:, :, 1])
+    descriptor[4] = np.mean(imageHSV[:, :, 2])
+
     moments = image_moments(image)
     huMoments = cv2.HuMoments(moments).flatten()
     descriptor[5] = huMoments[0]
@@ -62,17 +67,18 @@ def computeImage(imageRGB):
     for cnt in contours:
         idx += 1
         x, y, w, h = cv2.boundingRect(cnt)
-        if abs(h) * abs(w) > abs(hMax) * abs(wMax):
+        if abs(hMax) * abs(wMax) < abs(h) * abs(w) < (np.shape(erosing)[0] * np.shape(erosing)[1]):
             xMax, yMax, wMax, hMax = x, y, w, h
             maxCnt = cnt
 
     if idx > 0:
-        final = erosing[yMax:yMax + hMax, xMax:xMax + wMax]
+        final = erosing[yMax:yMax + hMax , xMax:xMax + wMax]
     else:
         final = erosing
 
     final = cv2.resize(final, (400, 500))
     imageRGBbb = imageRGB[yMax:yMax + hMax, xMax:xMax + wMax]
+    imageRGBbb = cv2.resize(imageRGBbb, (400, 500))
 
     return final, imageRGBbb
 

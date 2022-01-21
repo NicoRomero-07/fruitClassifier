@@ -21,7 +21,7 @@ class Banana():
         self.hydrates = 27
         self.fat = 0.3
         self.color = (0, 255, 255)
-        self.d = 60
+        self.d = 180
 
     def toString(self):
         return "Kcal: " + str(self.kcal) + "\n" + "Proteins: " + str(self.kcal) + "\n" + "Hydrates: " + str(

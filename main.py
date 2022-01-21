@@ -70,7 +70,7 @@ def classify_image(sign_image):
     descriptor = functions.genDescriptor(image, imageRGBbb)
     print(descriptor)
     # Classify circle test image
-    prior = 1 / 2
+    prior = 1 / len(fruits)
     apple = discriminant_function(descriptor, mean_apples, cov_apples, prior)
     print(apple)
     banana = discriminant_function(descriptor, mean_bananas, cov_bananas, prior)
@@ -90,6 +90,7 @@ def classify_image(sign_image):
         print("The sign is a error\n")
 
     return descriptor, f
+
 
 texto = "?"
 
@@ -117,7 +118,7 @@ while True:
         maxCnt = 0
         for cnt in contours:
             x, y, w, h = cv2.boundingRect(cnt)
-            if abs(hMax) * abs(wMax) < abs(h) * abs(w) < np.shape(image)[0] * np.shape(image)[1]:
+            if abs(hMax) * abs(wMax) < abs(h) * abs(w) < (np.shape(image)[0] * np.shape(image)[1]):
                 xMax, yMax, wMax, hMax = x, y, w, h
                 maxCnt = cnt
 
@@ -126,19 +127,20 @@ while True:
         fruitBoundingBox = image[xMax:xMax + wMax, yMax:yMax + hMax]
         #image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         cv2.rectangle(imageRGB, (xMax, yMax), (xMax + wMax, yMax + hMax), colors, 5)
-        #cv2.drawContours(imageRGB, contours, -1, (0, 0, 255), 2, cv2.LINE_AA)
-
+        cv2.drawContours(imageRGB, maxCnt, -1, (0, 0, 255), 2, cv2.LINE_AA)
 
         # Escribir texto
         ubicacionNombre = (xMax, yMax)
-        #Nombre
+        # Nombre
         cv2.putText(imageRGB, fruta.name, ubicacionNombre, font, tamanoLetra, fruta.color, grosorLetra)
-        #Valor nutricional
-        d=60
-        cv2.putText(imageRGB, "Kcal: "+str(fruta.kcal), (xMax+wMax-fruta.d,yMax), font, 1, fruta.color, 1)
-        cv2.putText(imageRGB, "Proteins: " + str(fruta.proteins), (xMax + wMax-fruta.d, yMax-25), font, 1, fruta.color, 1)
-        cv2.putText(imageRGB, "Hydrates: " + str(fruta.proteins), (xMax + wMax-fruta.d, yMax-50), font, 1, fruta.color, 1)
-        cv2.putText(imageRGB, "Fat: " + str(fruta.fat), (xMax + wMax-fruta.d, yMax - 75), font, 1, fruta.color, 1)
+        # Valor nutricional
+        d = 60
+        cv2.putText(imageRGB, "Kcal: " + str(fruta.kcal), (xMax + wMax - fruta.d, yMax), font, 1, fruta.color, 1)
+        cv2.putText(imageRGB, "Proteins: " + str(fruta.proteins), (xMax + wMax - fruta.d, yMax - 25), font, 1,
+                    fruta.color, 1)
+        cv2.putText(imageRGB, "Hydrates: " + str(fruta.hydrates), (xMax + wMax - fruta.d, yMax - 50), font, 1,
+                    fruta.color, 1)
+        cv2.putText(imageRGB, "Fat: " + str(fruta.fat), (xMax + wMax - fruta.d, yMax - 75), font, 1, fruta.color, 1)
         cv2.imshow("Fruit Classifier", imageRGB)
 
         if cv2.waitKey(50) >= 0:
