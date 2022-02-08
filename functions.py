@@ -76,15 +76,15 @@ def computeImage(imageRGB):
     else:
         final = erosing
 
-    final = cv2.resize(final, (400, 500))
+    final = resize(final)
     imageRGBbb = imageRGB[yMax:yMax + hMax, xMax:xMax + wMax]
-    imageRGBbb = cv2.resize(imageRGBbb, (400, 500))
+    imageRGBbb = resize(imageRGBbb)
 
     return final, imageRGBbb
 
 
 def resize(image):
-    scale_percent = 220  # percent of original size
+    scale_percent = 400 * 100 / image.shape[0]  # percent of original size
     width = int(image.shape[1] * scale_percent / 100)
     height = int(image.shape[0] * scale_percent / 100)
     dim = (width, height)
