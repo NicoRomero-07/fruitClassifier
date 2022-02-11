@@ -12,8 +12,10 @@ cv2.setRNGSeed(5)
 
 descriptor_apples = np.zeros((11, 7))
 descriptor_bananas = np.zeros((11, 7))
-descriptors = np.array([descriptor_apples, descriptor_bananas])
-fruits = ["apples", "bananas"]
+descriptor_oranges = np.zeros((11, 7))
+
+descriptors = np.array([descriptor_apples, descriptor_bananas, descriptor_oranges])
+fruits = ["apples", "bananas", "oranges"]
 
 for f in range(0, np.shape(fruits)[0]):
     for i in range(1, 12):
@@ -22,7 +24,6 @@ for f in range(0, np.shape(fruits)[0]):
         descriptors[f, i - 1, :] = functions.genDescriptor(finalImage, x)
         cv2.imwrite("./images/binarized/" + fruits[f] + "/" + str(i) + ".jpg", finalImage)
 
-print("APPLES: ", descriptors[0])
-print("BANANAS: ", descriptors[1])
-np.save("./data/descriptor_apples.npy", descriptors[0, :, :])
-np.save("./data/descriptor_bananas.npy", descriptors[1, :, :])
+for f in range(0, np.shape(fruits)[0]):
+    path = "./data/descriptor_" + str(fruits[f]) + ".npy"
+    np.save(path, descriptors[f, :, :])

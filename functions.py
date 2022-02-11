@@ -84,7 +84,7 @@ def computeImage(imageRGB):
 
 
 def resize(image):
-    scale_percent = 400 * 100 / image.shape[0]  # percent of original size
+    scale_percent = 400 * 100 / image.shape[0]
     width = int(image.shape[1] * scale_percent / 100)
     height = int(image.shape[0] * scale_percent / 100)
     dim = (width, height)
@@ -97,7 +97,7 @@ def resize(image):
 def computeSameSize(imageRGB):
     image = cv2.cvtColor(imageRGB, cv2.COLOR_BGR2GRAY)
     image = cv2.GaussianBlur(image, (5, 5), 5)
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = np.ones((10, 10), np.uint8)
     ret, binarizedOtsu = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     closing = cv2.morphologyEx(binarizedOtsu, cv2.MORPH_CLOSE, kernel)
     dilating = cv2.dilate(closing, kernel)

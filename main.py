@@ -11,20 +11,34 @@ cv2.namedWindow("Fruit Classifier")
 vc = cv2.VideoCapture(0)
 
 # Leer transmisión de video
-#vc = cv2.VideoCapture(1)
+# vc = cv2.VideoCapture(1)
 
-fruits = ["apples", "bananas"]
+fruits = ["apples", "bananas", "oranges"]
 
-train_apples = np.load("./data/descriptor_apples.npy")[:, :].T
-train_bananas = np.load("./data/descriptor_bananas.npy")[:, :].T
+trains = []
+
+for f in range(0, np.shape(fruits)[0]):
+    trains.append(np.load("./data/descriptor_" + str(fruits[f]) + ".npy")[:, :].T)
+
+#train_apples = np.load("./data/descriptor_apples.npy")[:, :].T
+#train_bananas = np.load("./data/descriptor_bananas.npy")[:, :].T
+
+covs = []
+
+for f in range(0, np.shape(fruits)[0]):
+    covs.append(np.cov(trains[f]))
 
 # Compute covariance matrices
-cov_apples = np.cov(train_apples)
-cov_bananas = np.cov(train_bananas)
+# cov_apples = np.cov(train_apples)
+# cov_bananas = np.cov(train_bananas)
+
+means = []
+for f in range(0, np.shape(fruits)[0]):
+    means.append(np.mean(trains[f], axis=1))
 
 # Compute means
-mean_apples = np.mean(train_apples, axis=1)
-mean_bananas = np.mean(train_bananas, axis=1)
+#mean_apples = np.mean(train_apples, axis=1)
+#mean_bananas = np.mean(train_bananas, axis=1)
 
 
 def discriminant_function(features, mu, cov, prior):
@@ -71,9 +85,11 @@ def classify_image(sign_image):
     print(descriptor)
     # Classify circle test image
     prior = 1 / len(fruits)
-    apple = discriminant_function(descriptor, mean_apples, cov_apples, prior)
+    apple = discriminant_function(descriptor, means[0], covs[0], prior)
+    #apple = discriminant_function(descriptor, mean_apples, cov_apples, prior)
     print(apple)
-    banana = discriminant_function(descriptor, mean_bananas, cov_bananas, prior)
+    banana = discriminant_function(descriptor, means[1], covs[1], prior)
+    #banana = discriminant_function(descriptor, mean_bananas, cov_bananas, prior)
     print(banana)
 
     # Search the maximum
@@ -125,7 +141,7 @@ while True:
         colors = (0, 0, 0)
 
         fruitBoundingBox = image[xMax:xMax + wMax, yMax:yMax + hMax]
-        #image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+        # image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         cv2.rectangle(imageRGB, (xMax, yMax), (xMax + wMax, yMax + hMax), colors, 5)
         cv2.drawContours(imageRGB, maxCnt, -1, (0, 0, 255), 2, cv2.LINE_AA)
 
