@@ -11,7 +11,7 @@ cv2.namedWindow("Fruit Classifier")
 vc = cv2.VideoCapture(0)
 
 # Leer transmisión de video
-vc = cv2.VideoCapture(1)
+#vc = cv2.VideoCapture(1)
 
 fruits = ["apples", "bananas"]
 
