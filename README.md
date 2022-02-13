@@ -7,5 +7,9 @@ This is a university computer vision project in which the development of a fruit
  -Python 3
  -OpenCV
 
+# Run it
+
+Run main.py with python and classifier will be lanched.
+
 # GIT
  https://github.com/NicoRomero-07/fruitClassifier.git
