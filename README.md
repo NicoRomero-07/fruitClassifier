@@ -9,7 +9,7 @@ This is a university computer vision project in which the development of a fruit
 
 # Run it
 
-Run main.py with python and classifier will be lanched.
+Run main.py with python then classifier will be lanched.
 
 # GIT
  https://github.com/NicoRomero-07/fruitClassifier.git
