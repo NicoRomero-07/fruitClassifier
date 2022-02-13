@@ -10,9 +10,11 @@ images_path = './images/'
 matplotlib.rcParams['figure.figsize'] = (10.0, 10.0)
 cv2.setRNGSeed(5)
 
-descriptor_apples = np.zeros((11, 7))
-descriptor_bananas = np.zeros((11, 7))
-descriptor_oranges = np.zeros((11, 7))
+tamDescriptor = (11, 10)
+
+descriptor_apples = np.zeros(tamDescriptor)
+descriptor_bananas = np.zeros(tamDescriptor)
+descriptor_oranges = np.zeros(tamDescriptor)
 
 descriptors = np.array([descriptor_apples, descriptor_bananas, descriptor_oranges])
 fruits = ["apples", "bananas", "oranges"]

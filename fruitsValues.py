@@ -28,6 +28,21 @@ class Banana():
             self.kcal) + "\n" + "Fat: " + str(self.kcal)
 
 
+class Orange():
+    def __init__(self):
+        self.name = "Orange"
+        self.kcal = 89
+        self.proteins = 1.3
+        self.hydrates = 27
+        self.fat = 0.3
+        self.color = (255, 165, 0)
+        self.d = 180
+
+    def toString(self):
+        return "Kcal: " + str(self.kcal) + "\n" + "Proteins: " + str(self.kcal) + "\n" + "Hydrates: " + str(
+            self.kcal) + "\n" + "Fat: " + str(self.kcal)
+
+
 class unDefine():
     def __init__(self):
         self.name = "UnDefined"

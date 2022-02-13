@@ -8,10 +8,7 @@ import functions
 import fruitsValues
 
 cv2.namedWindow("Fruit Classifier")
-vc = cv2.VideoCapture(0)
-
-# Leer transmisión de video
-# vc = cv2.VideoCapture(1)
+vc = cv2.VideoCapture(1)
 
 fruits = ["apples", "bananas", "oranges"]
 
@@ -20,25 +17,16 @@ trains = []
 for f in range(0, np.shape(fruits)[0]):
     trains.append(np.load("./data/descriptor_" + str(fruits[f]) + ".npy")[:, :].T)
 
-#train_apples = np.load("./data/descriptor_apples.npy")[:, :].T
-#train_bananas = np.load("./data/descriptor_bananas.npy")[:, :].T
 
 covs = []
 
 for f in range(0, np.shape(fruits)[0]):
     covs.append(np.cov(trains[f]))
 
-# Compute covariance matrices
-# cov_apples = np.cov(train_apples)
-# cov_bananas = np.cov(train_bananas)
-
 means = []
 for f in range(0, np.shape(fruits)[0]):
     means.append(np.mean(trains[f], axis=1))
 
-# Compute means
-#mean_apples = np.mean(train_apples, axis=1)
-#mean_bananas = np.mean(train_bananas, axis=1)
 
 
 def discriminant_function(features, mu, cov, prior):
@@ -84,26 +72,33 @@ def classify_image(sign_image):
     descriptor = functions.genDescriptor(image, imageRGBbb)
     print(descriptor)
     # Classify circle test image
-    prior = 1 / len(fruits)
+    prior = 1 / np.shape(fruits)[0]
     apple = discriminant_function(descriptor, means[0], covs[0], prior)
-    #apple = discriminant_function(descriptor, mean_apples, cov_apples, prior)
+    # apple = discriminant_function(descriptor, mean_apples, cov_apples, prior)
     print(apple)
+
     banana = discriminant_function(descriptor, means[1], covs[1], prior)
-    #banana = discriminant_function(descriptor, mean_bananas, cov_bananas, prior)
+    # banana = discriminant_function(descriptor, mean_bananas, cov_bananas, prior)
     print(banana)
 
+    orange = discriminant_function(descriptor, means[2], covs[2], prior)
+    print(orange)
+
     # Search the maximum
-    classification = max([apple, banana])
+    classification = max([apple, banana, orange])
 
     f = fruitsValues.unDefine()
     if classification == apple:
-        print("The sign is a apple\n")
+        print("The sign is an apple\n")
         f = fruitsValues.Apple()
     elif classification == banana:
         print("The sign is a banana\n")
         f = fruitsValues.Banana()
+    elif classification == orange:
+        print("The sign is an orange\n")
+        f = fruitsValues.Orange()
     else:
-        print("The sign is a error\n")
+        print("The sign is an error\n")
 
     return descriptor, f
 

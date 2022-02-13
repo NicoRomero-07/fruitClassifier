@@ -38,7 +38,7 @@ def genDescriptor(image, imageBbRgb):
             xMax, yMax, wMax, hMax = x, y, w, h
             maxCnt = cnt
 
-    descriptor = np.array([0., 0., 0., 0., 0., 0., 0.])
+    descriptor = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
     area = float(cv2.contourArea(maxCnt))
     perimetro = float(cv2.arcLength(maxCnt, True))
     descriptor[0] = perimetro ** 2 / area
@@ -49,11 +49,14 @@ def genDescriptor(image, imageBbRgb):
     descriptor[2] = np.mean(imageHSV[:, :, 0])
     descriptor[3] = np.mean(imageHSV[:, :, 1])
     descriptor[4] = np.mean(imageHSV[:, :, 2])
+    descriptor[5] = np.mean(imageBbRgb[:, :, 0])
+    descriptor[6] = np.mean(imageBbRgb[:, :, 1])
+    descriptor[7] = np.mean(imageBbRgb[:, :, 2])
 
     moments = image_moments(image)
     huMoments = cv2.HuMoments(moments).flatten()
-    descriptor[5] = huMoments[0]
-    descriptor[6] = huMoments[1]
+    descriptor[8] = huMoments[0]
+    descriptor[9] = huMoments[1]
 
     return descriptor
 
