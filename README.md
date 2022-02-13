@@ -7,6 +7,10 @@ This is a university computer vision project in which the development of a fruit
  -Python 3
  -OpenCV
 
+# Dependences
+
+OpenCV installation: pip install opencv-python
+
 # Run it
 
 Run main.py with python then classifier will be lanched.
